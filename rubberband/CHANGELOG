@@ -1,0 +1,222 @@
+
+Changes in Rubber Band v2.0.2
+
+ * Fix a crash in certain configurations when using mid-side
+   processing (OptionChannelsTogether) with pitch shifts
+ * Fix failure to build on very old macOS versions (<= 10.8) when
+   combined with much newer compilers
+
+The API is unchanged and the library is binary compatible back to
+version 1.7.
+
+
+Changes in Rubber Band v2.0.1
+
+ * Add a preliminary LV2 version of the example pitch-shifter plugin,
+   and update the existing LADSPA version to fix failure of the wet/dry
+   control to work correctly under in-place use
+ * Make the built-in resampler (introduced in v2.0.0) the default for
+   all builds, and use it in the official packaged versions of the
+   command-line utility. External resampler libraries are still
+   available as build options
+ * A couple of build fixes, including supporting the proper Meson
+   option (default_library=shared/static/both) at configuration time
+   to choose which type of library to build, instead of the custom
+   option used since v1.9.1
+
+The API is unchanged and the library is binary compatible back to
+version 1.7.
+
+
+Changes in Rubber Band v2.0.0
+
+ * Introduce a built-in resampler, intended to minimise artifacts on
+   pitch changes and to allow Rubber Band to be compiled without any
+   external dependencies (when also using the built-in FFT). The
+   built-in resampler is newer and less well-tested than
+   libsamplerate, and is not yet the default except in no-dependency
+   builds
+ * Introduce single compilation unit single/RubberBandSingle.cpp which
+   includes the whole library, to allow adding Rubber Band Library to
+   a C++ project without having to build anything separately. This
+   version always uses the built-in FFT and resampler and does not
+   support any extra configuration
+ * Update the stretch calculation logic for real-time mode, making it
+   more rigorous about avoiding timing drift when the pitch ratio
+   changes frequently
+ * Update the example LADSPA pitch shift plugin, adding a wet/dry mix
+   control to test (and take advantage of) the better timing
+   management in real-time mode
+ * Add a pitch/frequency-map file option to the command-line utility,
+   allowing time-varying pitch shifts to be pre-programmed
+
+The API is unchanged and the library is still binary compatible back
+to version 1.7.
+
+We incremented the major version number, not because of any API
+change, but because of a change to the timing of audio output for some
+applications of real-time mode. While the library is code-compatible
+with earlier releases, it is not "output-compatible" and may change
+automation-driven mixes even when used with identical options. If you
+are already using an earlier release in real-time mode, please test
+v2.0.0 carefully before updating.
+
+Note that there are no pure bug-fixes in v2.0.0: if you are happy with
+v1.9.2, there is no pressing reason to update.
+
+
+Changes in Rubber Band v1.9.2
+
+ * Introduce a built-in FFT option to be a good default when no
+   requirements point to a particular external library preference
+ * Fix potential crash following some reconfigure options. Thanks
+   to Michael Tyson for reporting this
+ * Ensure Accelerate is listed in generated pkg-config if required
+ * Check for existence of sincos in configuration
+ * Fix host identification when cross-compiling
+
+The API is unchanged and the library is binary compatible with
+version 1.7.
+
+
+Changes in Rubber Band v1.9.1
+
+ * Switch build system from Makefiles and Visual Studio project to
+   Meson/Ninja for all platforms. There are still Makefiles and VS
+   projects included in otherbuilds/ for those who wish to use them to
+   build the static library directly
+ * Make various fixes to improve sound quality when pitch-shifting
+   dynamically in real-time (requires libsamplerate)
+ * Fix floating-point exception when a very very long stretch factor
+   is presented
+ * Move the two directories that together provide the .NET interface
+   (rubberband-sharp and rubberband-dll) into their own subdir (dotnet)
+ * Ensure the library builds and runs correctly on ARM Mac (Apple
+   Silicon, M1), and also on Windows using the Visual C++ Clang
+   front-end
+
+The API is unchanged and the library is binary compatible with
+version 1.7.
+
+
+Changes in Rubber Band v1.9
+
+ * Fix incorrect numbering of pitch speed/quality flags in the
+   auxiliary C wrapper header. The effect of this was that code using
+   the C wrapper that intended to select the higher-quality
+   pitch-shift mode was actually choosing the higher-speed mode, and
+   vice versa. (The third mode - high-consistency, commonly used in
+   real-time applications - was correct.) Thanks to Michael Bradshaw
+   for reporting this.
+ * Add a .NET interface, generously contributed by Jonathan Gilbert
+   under a BSD-like licence
+ * Improve error handling in command-line utility
+ * Fix failure to build with FFTW_SINGLE_ONLY defined
+ * Fix some compiler warnings
+ * Install the JNI target (with make install) only if it has actually
+   been built, avoiding an error otherwise
+
+The API is unchanged except for the fix noted above, as a result of
+which the minor version number has been increased. The library is
+binary compatible with version 1.7.
+
+
+Changes in Rubber Band v1.8.2
+
+ * Fix a number of small memory leaks
+ * Make stretcher more robust to being fed invalid input (with NaNs)
+ * Include iOS build file
+ * Various platform build fixes and improvements
+
+The API is unchanged and the library is binary compatible with
+version 1.7.
+
+
+Changes in Rubber Band v1.8.1
+
+ * Fix a crash in formant-preserving pitch shift for some build targets
+
+The API is unchanged and the library is binary compatible with
+version 1.7.
+
+
+Changes in Rubber Band v1.8
+
+ * Add build support for Win32/MSVC, Android, and various libraries
+ * Add Java JNI interface
+
+The API is unchanged and the library is binary compatible with
+version 1.7.
+
+
+Changes in Rubber Band v1.7
+
+ * Add the centre-focus option as an alternative processing mode for
+   stereo (using mid-side arrangement)
+ * Several bug fixes
+
+The library is binary compatible with version 1.6 for forward
+compatibility (values have been added to an existing enum).  Code
+written to use 1.7 is not necessarily compatible with 1.6.
+
+
+Changes in Rubber Band v1.6
+
+ * Add Smoothing option.  This uses a window-presum FFT, introducing
+   time-domain aliasing which is then smoothed using a sinc window.
+   This can be used in combination with any of the existing processing
+   control options.  This will soften transients but the result may
+   still be more pleasant for some material that is not very amenable
+   to being time stretched.
+ * Fix silent channel of output when processing with band-limited
+   transients option
+ * Include libresample support
+
+The library is binary compatible with version 1.5 for forward
+compatibility (values have been added to an existing enum).  Code
+written to use 1.6 is not necessarily compatible with 1.5.
+
+
+Changes in Rubber Band v1.5
+
+ * Add a more reliable transient detection mode, and make the mode
+   selectable using OptionDetectorXXX flags -- the new method is
+   the default
+ * Band-limit transient detectors to avoid being distracted by
+   inaudible garbage
+ * Add a key-frame mapping facility for variable stretch ratio
+   management during offline stretches
+
+The library is binary compatible with version 1.4 for forward
+compatibility (a function has been added and an enum changed, but no
+existing entry points have changed).  Code written to use 1.5 is not
+necessarily compatible with 1.4.
+
+
+Changes in Rubber Band v1.4 
+
+ * Fix a hang when faced with some very peculiar stretch factors
+ * Fix some incorrect threading condition usage
+ * Some code rearrangement
+ * Fix build on Solaris
+
+The library is binary compatible with version 1.3.
+
+
+Changes in Rubber Band v1.3
+
+ * Fix a bug that may cause incorrect output during the first process
+   block of some audio files, when processing in offline mode
+ * Fix a small number of build issues and more minor bugs
+
+The library is binary compatible with version 1.2.
+
+
+Changes in Rubber Band v1.2
+
+ * Add an initial "formant preservation" option when pitch shifting
+ * Real-time pitch shifting now uses a faster method by default, with
+   less variation in CPU usage
+ * The code is more amenable to compiler auto-vectorization (through
+   e.g. gcc --ftree-vectorize).
+
