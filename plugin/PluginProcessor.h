@@ -49,6 +49,7 @@ private:
     juce::AudioParameterFloat* octaves;
     juce::AudioParameterFloat* semitones;
     juce::AudioParameterFloat* cents;
+    juce::AudioParameterFloat* wet_dry;
     juce::AudioParameterInt* crispness;
     juce::AudioParameterBool* format;
     //==============================================================================

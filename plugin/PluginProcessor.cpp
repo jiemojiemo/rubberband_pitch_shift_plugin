@@ -18,6 +18,8 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
                                                        -12.0f, 12.0f, 0));
   addParameter(cents = new juce::AudioParameterFloat("cents", "cents",
                                                          -100.f, 100.f, 0));
+  addParameter(wet_dry = new juce::AudioParameterFloat("wet_dry", "wet_dry",
+                                                     0.0f, 1.0f, 0));
   addParameter(crispness = new juce::AudioParameterInt("crispness", "crispness", 0, 3, 0));
 
   addParameter(format = new juce::AudioParameterBool("format", "format", false));
@@ -143,11 +145,13 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
   float octaves_value = *octaves;
   float semitones_value = *semitones;
   float cents_value = *cents;
+  float wet_dry_value = *wet_dry;
   auto crispness_value = float(*crispness);
   float format_value = format->get() ? 1.0f : 0.0f;
   pitchShifter->m_octaves = &octaves_value;
   pitchShifter->m_semitones = &semitones_value;
   pitchShifter->m_cents = &cents_value;
+  pitchShifter->m_wetDry = &wet_dry_value;
   pitchShifter->m_crispness = &crispness_value;
   pitchShifter->m_formant = &format_value;
 
