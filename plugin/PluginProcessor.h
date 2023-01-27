@@ -1,6 +1,10 @@
 #pragma once
-#include "RubberBandPitchShifter.h"
+
 #include <juce_audio_processors/juce_audio_processors.h>
+
+// Make sure that this include comes after JUCE includes,
+// or on Windows you'll get some "expected unqualified-id" type of error ...
+#include "RubberBandPitchShifter.h"
 #include <memory>
 
 //==============================================================================
