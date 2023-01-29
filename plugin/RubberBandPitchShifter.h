@@ -7,6 +7,8 @@
 
 #pragma once
 #include "RubberBandStretcher.h"
+// Make sure that this include comes after JUCE includes,
+// or on Windows you'll get some "expected unqualified-id" type of error ...
 #include "base/RingBuffer.h"
 #include <iostream>
 using RubberBand::RubberBandStretcher;
